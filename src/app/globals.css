@@ -138,3 +138,22 @@ body {
   padding: 0 2.4rem;
   min-width: 8.4rem;
 }
+
+
+.country-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.country-logo {
+  width: 35px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.selected-logo {
+  width: 35px;
+  height: 20px;
+  margin-right: 8px;
+}
