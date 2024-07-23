@@ -20,6 +20,7 @@ type Inputs = {
   cellphone: string
   password: string
   country: string
+  confirmPassword: string
 }
 
 
@@ -27,8 +28,32 @@ const RegisterForm = ({type}: Props) => {
   const [selectedCosuntry, setSelectedCountry] = useState<CountriesI[] >([]);
   const [selectCountrie, setSelectCountrie] = useState<string | undefined>()
   const [typeForm, setTypeForm] = useState(type)
-  const { register, handleSubmit, watch, formState: {errors} } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+  const { register, handleSubmit, watch, formState: { errors }, getValues } = useForm<Inputs>()
+  const [currentCountry, setCurrentCountry] = useState({} as CountriesI);
+  
+   const findCountry = (country: string) => {
+     const searchCountry = selectedCosuntry.find((c) => c.cca2 === country);
+     if (searchCountry) {
+        setCurrentCountry(searchCountry);
+      }
+   };
+
+  useEffect(() => {
+    const country = watch('country');
+    if(country) {
+      findCountry(country);
+    }
+  }, [watch('country')])
+  
+
+ 
+  
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log({
+      ...data,
+      country: currentCountry
+    })
+  }
   
   useEffect(() => {
     fetch('https://restcountries.com/v3.1/all').then((response) => {
@@ -38,6 +63,8 @@ const RegisterForm = ({type}: Props) => {
     })
   }, [])
   
+
+
 
 
   return (
@@ -78,7 +105,6 @@ const RegisterForm = ({type}: Props) => {
             label="Selecciona tu país"
             placeholder="Selecciona tu país"
             // value={selectCountrie}
-            // onChange={(e) => setSelectCountrie(e.target.value)}
             {...register('country', {required: true})}
             >
               {
@@ -107,9 +133,9 @@ const RegisterForm = ({type}: Props) => {
             </div>
             <div className="col-span-3">
               <Input  label='Confirmar Contraseña' 
-                {...register('password', {required: true})}
+                {...register('confirmPassword', {required: true})}
               />
-              {errors.password && <span className="text-red-500 text-xs">Este campo es requerido</span>}
+              {errors.confirmPassword && <span className="text-red-500 text-xs">Este campo es requerido</span>}
             </div>
             <div className="col-span-6">
               <Button className="w-full" type="submit" color="primary">Registrarse</Button>
